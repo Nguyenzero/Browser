@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.HTTPClientController"
+            prefWidth="900" prefHeight="600">
+
+    <top>
+        <VBox spacing="8">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Server IP:"/>
+                <TextField fx:id="txtIP" prefWidth="150"/>
+                <Label text="Port:"/>
+                <TextField fx:id="txtPort" prefWidth="80"/>
+                <Label text="Method:"/>
+                <ComboBox fx:id="cbMethod" prefWidth="100"/>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="URL:"/>
+                <TextField fx:id="txtURL" HBox.hgrow="ALWAYS"
+                           promptText="Nhập URL (vd: https://www.example.com)"/>
+                <Button fx:id="btnSend" text="Gửi yêu cầu" onAction="#onSendRequest"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <TextArea fx:id="txtResponse" wrapText="true"/>
+    </center>
+</BorderPane>
