@@ -1,40 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
+<?import javafx.scene.web.WebView?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.2"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controller.HTTPClientController"
-            prefWidth="900" prefHeight="600">
+
+<BorderPane prefHeight="600" prefWidth="900"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.HTTPClientController">
 
     <top>
         <VBox spacing="8">
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
+                <Insets bottom="10" left="10" right="10" top="10"/>
             </padding>
 
-            <HBox spacing="10" alignment="CENTER_LEFT">
+            <HBox alignment="CENTER_LEFT" spacing="10">
                 <Label text="Server IP:"/>
-                <TextField fx:id="txtIP" prefWidth="150"/>
+                <TextField fx:id="txtIP" prefWidth="150" text="192.168.33.1"/>
                 <Label text="Port:"/>
-                <TextField fx:id="txtPort" prefWidth="80"/>
+                <TextField fx:id="txtPort" prefWidth="80" text="8080"/>
                 <Label text="Method:"/>
                 <ComboBox fx:id="cbMethod" prefWidth="100"/>
             </HBox>
 
-            <HBox spacing="10" alignment="CENTER_LEFT">
+            <HBox alignment="CENTER_LEFT" spacing="10">
                 <Label text="URL:"/>
-                <TextField fx:id="txtURL" HBox.hgrow="ALWAYS"
-                           promptText="Nhập URL (vd: https://www.example.com)"/>
-                <Button fx:id="btnSend" text="Gửi yêu cầu" onAction="#onSendRequest"/>
+                <TextField fx:id="txtURL" promptText="Nhập URL (vd: https://www.example.com)" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnSend" onAction="#onSendRequest" text="Gửi yêu cầu"/>
             </HBox>
         </VBox>
     </top>
 
     <center>
-        <TextArea fx:id="txtResponse" wrapText="true"/>
+        <TabPane fx:id="tabPane">
+            <tabs>
+                <Tab text="Kết quả HTML">
+                    <TextArea fx:id="txtResponse" wrapText="true"/>
+                </Tab>
+                <Tab text="Hiển thị trang thật">
+                    <WebView fx:id="webView"/>
+                </Tab>
+            </tabs>
+        </TabPane>
     </center>
 </BorderPane>
