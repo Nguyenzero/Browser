@@ -25,7 +25,7 @@ public class HTTPClientController {
     public void initialize() {
         cbMethod.getItems().addAll("GET", "POST", "HEAD");
         cbMethod.setValue("GET");
-        txtIP.setText("192.168.33.1");
+        txtIP.setText("192.168.1.101");
         txtPort.setText("8080");
         txtURL.setText("https://");
 

@@ -1,21 +1,55 @@
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
 
 public class HTTPServer {
     public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(8080)) {
-            System.out.println("✅ HTTP Server đang chạy trên cổng 8080...");
-            InetAddress ip = InetAddress.getLocalHost();
-            System.out.println("Địa chỉ IPv4 của server: " + ip.getHostAddress());
-
-            while (true) {
-                Socket client = serverSocket.accept();
-                new Thread(new ClientHandler(client)).start();
+        try {
+            // 🔍 Lấy địa chỉ IPv4 của adapter Wi-Fi (thường có prefix "wlan" hoặc "Wi-Fi")
+            InetAddress wifiAddress = getWifiIPv4Address();
+            if (wifiAddress == null) {
+                System.err.println("❌ Không tìm thấy địa chỉ IPv4 của adapter Wi-Fi!");
+                return;
             }
+
+            // ✅ Bind server chỉ vào IP Wi-Fi này
+            try (ServerSocket serverSocket = new ServerSocket(8080, 50, wifiAddress)) {
+                System.out.println("✅ HTTP Server đang chạy trên:");
+                System.out.println(" - Địa chỉ: " + wifiAddress.getHostAddress());
+                System.out.println(" - Cổng: 8080");
+
+                while (true) {
+                    Socket client = serverSocket.accept();
+                    new Thread(new ClientHandler(client)).start();
+                }
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Hàm tìm địa chỉ IPv4 của adapter Wi-Fi.
+     */
+    private static InetAddress getWifiIPv4Address() throws SocketException {
+        Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+        while (nets.hasMoreElements()) {
+            NetworkInterface netint = nets.nextElement();
+            String name = netint.getDisplayName().toLowerCase();
+            // Có thể là "wi-fi", "wlan", "wireless", tùy máy
+            if (name.contains("wi-fi") || name.contains("wlan") || name.contains("wireless")) {
+                Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+                while (inetAddresses.hasMoreElements()) {
+                    InetAddress inetAddress = inetAddresses.nextElement();
+                    if (inetAddress instanceof Inet4Address && !inetAddress.isLoopbackAddress()) {
+                        return inetAddress;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
 
@@ -116,5 +150,4 @@ class ClientHandler implements Runnable {
             return "<html><body><h3>Lỗi truy cập: " + urlString + "</h3><p>" + e.getMessage() + "</p></body></html>";
         }
     }
-
 }
