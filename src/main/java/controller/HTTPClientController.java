@@ -68,9 +68,13 @@ public class HTTPClientController {
             txtResponse.setText(resp.toString());
 
             if (method.equals("GET") || method.equals("POST")) {
-                countTags(resp.toString());
-                displayWebPage(url);
+                String htmlPart = "";
+                String[] parts = resp.toString().split("\r?\n\r?\n", 2);
+                if (parts.length > 1) htmlPart = parts[1]; // tách phần HTML khỏi header
+                countTags(htmlPart);
+                displayWebPage(htmlPart);
             }
+
 
         } catch (IOException e) {
             txtResponse.setText("❌ Lỗi: " + e.getMessage());
@@ -94,14 +98,15 @@ public class HTTPClientController {
         txtResponse.appendText(sb.toString());
     }
 
-    /** Hiển thị trang thật bằng WebView (chỉ xem, không tương tác) **/
-    private void displayWebPage(String url) {
+
+    /** Hiển thị nội dung HTML do server trả về (chỉ xem, không tải thật) **/
+    private void displayWebPage(String htmlContent) {
         WebEngine engine = webView.getEngine();
-
-        if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            url = "https://" + url;
+        if (htmlContent == null || htmlContent.isBlank()) {
+            engine.loadContent("<html><body><h3>Không có nội dung để hiển thị</h3></body></html>", "text/html");
+        } else {
+            engine.loadContent(htmlContent, "text/html");
         }
-
-        engine.load(url);
     }
+
 }
